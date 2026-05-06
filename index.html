@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Campus Map Quiz</title>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> <!-- jQuery -->
+    <script src="script.js" defer></script> <!-- Core Functionality -->
+    <script src="config.js"></script> <!-- Google Maps Demo API -->
+
+    <!-- Style Sheets (CSS, Fonts, etc)-->
+    <link rel="stylesheet" 
+          href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i,900,900i" 
+          type="text/css" media="all"> <!-- Source Sans Pro -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <!-- Preface -->
+        <div id="preface">
+            <span id="logo-block">CSUN</span>
+
+            <h1>Campus Map Quiz</h1>
+
+            <p id="subtitle">
+                Let's explore the CSUN Campus. Can you locate these buildings?
+            </p>
+        </div>
+
+        <!-- Live Game Stats -->
+        <div id="stats-bar"> 
+            <!-- Timer -->
+            <div class="stat-box" id="timer-box"> 
+                <span class="stat-label">Time</span>
+                <span class="stat-value" id="timer-display">0:00</span>
+            </div>
+
+            <!-- Score -->
+            <div class="stat-box" id="score-box">
+                <span class="stat-label">Score</span>
+                <span class="stat-value" id="score-display">0 / 5</span>
+            </div>
+
+            <div class="stat-box" id="question-box">
+                <span class="stat-label">Question</span>
+                <span class="stat-value" id="question-display">1 / 5</span>
+            </div>
+
+        </div>
+
+    </header>
+    
+    <!-- Main Page Content --> 
+    <main> 
+
+        <!-- Sidebar -->
+        <aside id="sidebar">
+            
+            <!-- Intro Panel (Before Game Starts) -->
+            <dialog id="intro-panel" class="panel" open> 
+                <h2>Game Instructions</h2>
+
+                <ul>
+                    <li>Double-click on the map to select a location.</li>
+                    <li>There a total of 5 locations.</li>
+                    <li>Accuracy and speed both count towards your final score.</li>
+                    <li>The selection box will turn green if you're correct and red if not.</li>
+                    <li>Good Luck!</li>
+                </ul>
+
+                <button id="start-btn">Start Playing</button>
+            </dialog>
+
+            <!-- Game Panel (During Game) -->
+            <section id="game-panel" class="panel" hidden> 
+                <!-- Prompt (Which building to look for) -->
+                <div id="prompt-box">
+                    <h2 id="prompt-label">Where is <span id="building-name"></span>?</h2>
+
+                    <p id="grid-hint-box" class="hidden">
+                        Hint: <span id="grid-hint"></span>
+                    </p>
+                </div>
+
+                <!-- Live Feedback -->
+                <div id="feedback-box" class="hidden">
+                    <p id="feedback-icon"></p>
+                    <p id="feedback-msg"></p>
+                    
+                    <button id="next-btn">Next</button>
+                </div>
+
+                <!-- Progress -->
+                <div id="progress">
+
+                </div>
+
+            </section>
+
+            <!-- Results Panel (After Game Ends) -->
+            <dialog id="results-panel" class="panel">
+                <h2>Game Over</h2>
+
+                <p>
+                    Final Score: <span id="final-score-msg"></span>
+                </p>
+                <p>
+                    Final Time: <span id="final-time-msg"></span>
+                </p>
+                <div id="high-score-box"> High Score Box
+                    <p id="high-score-msg"></p>
+                </div>
+
+                <button id="restart-btn">Try Again</button>
+            </dialog>
+
+        </aside>
+
+        <!-- Map Container -->
+        <div id="map">
+
+        </div>
+
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <a href="https://github.com/mel-rossi/gmaps-api-game">&#x24D8; Source Code</a>
+
+        <p>CSUN Campus Map Quiz &mdash; JavaScript Project &mdash; Powered by Google Maps API</p>
+
+        <pre>Copyright © 2026 Mel Rossi Rodrigues. All rights reserved.</pre>
+    </footer>
+</body>
+</html>
