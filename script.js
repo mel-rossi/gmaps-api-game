@@ -4,10 +4,10 @@ let map; // Map
 let question = 0; // Question number
 const TOLERANCE = 3000; // in meters
 const mapObj = document.getElementById("map"); // Map Object
+const logBox = document.getElementById("log-box");
 const startBtn = document.getElementById("start-btn"); // Start Button
 const gamePanel = document.getElementById("game-panel"); // Game Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
-const logBox = document.getElementById("log-box");
 const feedbackBox = document.getElementById("feedback-box"); // Feedback Box
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
@@ -101,6 +101,14 @@ function loadQuestion(i) {
     block.scrollIntoView({ behavior: "smooth" });
 }
 
+function demoHandleClick(bool) { 
+    if (bool) { 
+        console.log("Correct!"); 
+    } else { 
+        console.log("Wrong!");
+    }
+}
+
 // Double Click on Map (Come back when Demo Key limit resets)
 function handleClick(clickedLatLng) { 
     const loc = LOCATIONS[question];
@@ -142,3 +150,15 @@ function endGame() {
 
 // Start Button 
 startBtn.addEventListener("click", startGame);
+
+// Demo Double Click (while map is out of daily use) - Remove later 
+mapObj.addEventListener("dblclick", function(e) {
+    e.stopPropagation();
+    demoHandleClick(true);
+}); 
+
+document.addEventListener("dblclick", function(e) { 
+    if (e.target.id !== "map") { 
+        demoHandleClick(false); 
+    }
+});

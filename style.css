@@ -170,6 +170,7 @@ dialog {
     flex-shrink: 0;
     width: var(--sw);    
     overflow-y: auto;
+    overflow-x: hidden;
     border-right: 2px solid var(--csu-red);
 }
 
