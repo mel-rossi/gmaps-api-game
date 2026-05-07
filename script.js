@@ -49,6 +49,11 @@ function initMap() {
             }
         ]
     });
+
+    // Double Click Event
+    map.addListener("dblclick", function(e) { 
+        handleClick(e.latLng);
+    });
 }
 
 // Start Playing
@@ -88,9 +93,4 @@ function handleClick(clickedLatLng) {
 
 // Start Button 
 document.getElementById("start-btn").addEventListener("click", startGame);
-
-// Double Click Event
-map.addListener("dblclick", function(e) { 
-    handleClick(event.latLng);
-});
 
