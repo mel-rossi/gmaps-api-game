@@ -2,7 +2,7 @@
 
 let map; // Map
 let question = 0; // Question number
-const TOLERANCE = 60; // in meters
+const TOLERANCE = 300; // in meters
 
 const LOCATIONS = [ // Locations
     { name: "Black House",                 grid: "B6", lat: 34.2436, lng: -118.5233 },
@@ -15,7 +15,7 @@ const LOCATIONS = [ // Locations
 // Map Initialization 
 function initMap() { 
     map = new google.maps.Map(document.getElementById("map"), { 
-        center: { lat: 34.2405, lng: -118.5278 }, // CSUN Campus 
+        center: { lat: 34.239294, lng: -118.529317 }, // CSUN Campus
         zoom: 17, 
         mapTypeId: "roadmap",
 
@@ -47,7 +47,7 @@ function initMap() {
                 featureType: "poi",
                 stylers: [{ visibility: "off" }]
             }
-        ]
+        ],
     });
 
     // Double Click Event
@@ -74,7 +74,7 @@ function loadQuestion(i) {
 // Double Click on Map
 function handleClick(clickedLatLng) { 
     const loc = LOCATIONS[question];
-    const correctLatLng = new google.maps.latLng(loc.lat, loc.lng);
+    const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
     // Calculate distance between click and correct location 
     const distance = google.maps.geometry.spherical.computeDistanceBetween(

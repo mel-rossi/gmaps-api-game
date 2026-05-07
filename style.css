@@ -6,10 +6,12 @@
     Black 20%  : #d1d3d4 (RGB: 209 211 212)
     White      : #FFFFFF (RGB: 255 255 255)
 
-    PMS GREEN  : #00ac85 (RGB: 0 172 133)
-    PMS 7408 C : f7bf0a (RGB: 247 191 10)
-    PMS 7417 C : #e3503e (RGB: 225 79 61)
-    PMS 652 C  : #7e9ccc (RGB: 126 156 204)
+    PMS GREEN  : #00ac85 (RGB: 0 172 133)   - Teal Green
+    RMS 2425 C : #85006C (RGB: 133 0 108)   - Magenta
+    PMS 7417 C : #e3503e (RGB: 225 79 61)   - Orange Red
+    PMS 7408 C : #f7bf0a (RGB: 247 191 10)  - Yellow
+    PMS 652 C  : #7e9ccc (RGB: 126 156 204) - Mute Blue
+    PMS 2715 C : #8c84e3 (RGB: 140 132 227) - Lavender
 */
 
 /* Global Variables for ease of relative consistency */
@@ -20,25 +22,26 @@
     --sw: 280px; /* Sidebar Width */
     
     /* Colors */
-    --bg-color: Black;
     --csu-red: #C91235;
-    --font-color: White;
+    --bg-color: #000000; 
     --black-60: #808285;
-    --black-40: #a7a9ac;
-    --black-20: #d1d3d4;
-    --hint-red: #e3503e;
-    --mute-blue: #7e9ccc;
-    --hint-green: #00ac85;
-    --hint-yellow: #f7bf0a;
+    --black-40: #A7A9AC;
+    --black-20: #D1D3D4;
+    --hint-red: #E3503E;
+    --highlight: #8C84E3;
+    --mute-blue: #7E9CCC;
+    --font-color: #FFFFFF; 
+    --hint-green: #00AC85;
+    --hint-yellow: #F7BF0A;
 }
 
 /* Global Styles */
 body {
     z-index: 0;
     height: 100vh;
-    color: var(--font-color);
     overflow: hidden;
     position: relative; 
+    color: var(--font-color);
     background: var(--bg-color);
     font-family: 'Source Sans Pro', sans-serif;
 }
@@ -48,8 +51,9 @@ main {
     left: 0;
     right: 0;
     display: flex;
-    position: fixed;
     top: var(--hh);
+    position: fixed;
+    overflow: hidden;
     bottom: var(--fh);
 }
 
@@ -161,7 +165,6 @@ dialog {
     color: var(--black-40);
 }
 
-
 /* Sidebar */
 #sidebar { 
     flex-shrink: 0;
@@ -215,10 +218,16 @@ ul #color-guide {
     color: var(--hint-yellow);
 }
 
+.luck { 
+    font-size: 2em;
+    color: var(--highlight);
+}
+
 /* Map Container */
 #map {
     flex: 1; 
     height: 100%;
+    overflow: hidden;
 }
 
 .hidden { 
