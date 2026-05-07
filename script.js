@@ -1,3 +1,13 @@
+// Global Variables 
+const LOCATIONS = [ // Locations
+    { name: "Black House", grid: "B6" },
+    { name: "Santa Susana Hall", grid: "D2" },
+    { name: "C.R. Johnson Auditorium", grid: "D5" }, 
+    { name: "Student Recreation Center", grid: "G4" },
+    { name: "Extended University Commons", grid: "B4" },
+];
+
+let question = 0; // Question number
 
 // Map Initialization 
 function initMap() { 
@@ -43,6 +53,14 @@ function startGame() {
     document.getElementById("intro-panel").close(); // Close Intro Panel
     document.getElementById("map").removeAttribute("hidden"); // Open Map
     document.getElementById("game-panel").removeAttribute("hidden"); // Open Game Panel
+
+    loadQuestion(question) // Load first question 
+}
+
+// Load question 
+function loadQuestion(i) { 
+    const loc = LOCATIONS[i]; 
+    document.getElementById("building-name").innerHTML = loc.name;
 }
 
 // Event Listeners 
@@ -50,10 +68,3 @@ function startGame() {
 // Start Button 
 document.getElementById("start-btn").addEventListener("click", startGame);
 
-
-// Locations : 
-// CSUN Santa Susana Hall—D2
-// CSUN C.R. Johnson Auditorium—D5
-// CSUN Student Recreation Center—G4
-// CSUN Black House—B6
-// CSUN Extended University Commons—B4
