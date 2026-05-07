@@ -169,6 +169,7 @@ dialog {
 #sidebar { 
     flex-shrink: 0;
     width: var(--sw);    
+    overflow-y: auto;
     border-right: 2px solid var(--csu-red);
 }
 
@@ -223,6 +224,12 @@ ul #color-guide {
     color: var(--highlight);
 }
 
+.prompt-box {
+    margin: -35px;
+    margin-top: 20px;
+    border-top: 10px solid var(--csu-red);
+}
+
 /* Map Container */
 #map {
     flex: 1; 
@@ -231,5 +238,5 @@ ul #color-guide {
 }
 
 .hidden { 
-    
+    display: none;
 }
