@@ -8,7 +8,6 @@ const logBox = document.getElementById("log-box");
 const startBtn = document.getElementById("start-btn"); // Start Button
 const gamePanel = document.getElementById("game-panel"); // Game Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
-const feedbackBox = document.getElementById("feedback-box"); // Feedback Box
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
 const LOCATIONS = [ // Locations
@@ -81,8 +80,14 @@ function loadQuestion(i) {
     block.className = "panel prompt-box";
     block.id = `question-${i}`;
     block.innerHTML = `
-        <h2 id="prompt-label">Where is <span id="building-name">${loc.name}</span>?</h2>
+        <!-- Question Prompt -->
+        <h3>Where is <span class="bld-name">${loc.name}</span> ?</h2>
 
+        <!-- Live Feedback & Progress -->
+        <div id="feedback-box">
+        </div>
+
+        <!-- Next Button --> 
         <button class="next-btn", id="${i}-next-btn">Next</button>
     `;
     
@@ -101,12 +106,21 @@ function loadQuestion(i) {
     block.scrollIntoView({ behavior: "smooth" });
 }
 
-function demoHandleClick(bool) { 
-    if (bool) { 
-        console.log("Correct!"); 
-    } else { 
-        console.log("Wrong!");
-    }
+// Demo Handle Click
+function demoHandleClick(bool) {
+    const loc = LOCATIONS[question];
+
+    // Feedback box inside current question block
+    const currentBlock = document.getElementById(`question-${question}`);
+    const currentFeedback = currentBlock.querySelector("#feedback-box");
+
+    const entry = document.createElement("p");
+    entry.className = bool ? "feedback-correct" : "feedback-wrong";
+    entry.innerHTML = bool
+        ? `You guessed correctly! Great job.`
+        : `Sorry, wrong location.`;
+
+    currentFeedback.appendChild(entry);
 }
 
 // Double Click on Map (Come back when Demo Key limit resets)

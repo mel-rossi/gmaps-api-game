@@ -222,6 +222,7 @@ ul #color-guide {
 
 .luck { 
     font-size: 2em;
+    font-weight: 700;
     color: var(--highlight);
 }
 
@@ -229,6 +230,20 @@ ul #color-guide {
     margin: -35px;
     margin-top: 20px;
     border-top: 10px solid var(--csu-red);
+}
+
+.prompt-box h3 { 
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--black-40);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--csu-red);
+}
+
+.bld-name { 
+    font-size: 1.2em;
+    color: var(--highlight);
 }
 
 /* Map Container */
