@@ -9,8 +9,8 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> <!-- jQuery -->
-    <script src="script.js" async></script> <!-- Core Functionality -->
-    <script src="config.js"></script> <!-- Google Maps Demo API -->
+    <script src="script.js" defer></script> <!-- Core Functionality -->
+    <script src="config.js" defer></script> <!-- Google Maps Demo API -->
 
     <!-- Style Sheets (CSS, Fonts, etc)-->
     <link rel="stylesheet" 
@@ -63,15 +63,30 @@
         <aside id="sidebar">
             
             <!-- Intro Panel (Before Game Starts) -->
-            <dialog id="intro-panel" class="panel"> <!-- Set to open later -->
+            <dialog id="intro-panel" class="panel" open> <!-- Set to open later -->
                 <h2>Game Instructions</h2>
 
                 <ul>
-                    <li>There a total of 5 locations.</li>
+                    <li>There are a total of 5 locations.</li>
                     <li>Double-click on the map to select a location.</li>
+                    <li>You have 3 chances to guess each location correctly.</li>
                     <li>Accuracy and speed both count towards your final score.</li>
-                    <li>The selection box will turn green if you're correct and red if not.</li>
-                    <li></li>
+                    <li>The selection box will turn: </li>
+                    <ul id="color-guide">
+                        <li>
+                            <span class="green-select">green</span> 
+                            if you guessed correctly.
+                        </li> 
+                        <li>
+                            <span class="yellow-select">yellow</span> 
+                            if you guessed wrong and will dissapear soon after.
+                        </li>
+                        <li>
+                            <span class="red-select">red</span> 
+                            over the correct location, if you guessed wrong in your <b><i>last</i></b> try.
+                        </li>
+                    </ul>
+                    <li>&zwnj;</li>
                     <li>Good Luck!</li>
                 </ul>
 
@@ -124,7 +139,7 @@
         </aside>
 
         <!-- Map Container -->
-        <div id="map">
+        <div id="map" hidden>
 
         </div>
 

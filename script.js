@@ -38,6 +38,19 @@ function initMap() {
     });
 }
 
+// Start Playing
+function startGame() { 
+    document.getElementById("intro-panel").close(); // Close Intro Panel
+    document.getElementById("map").removeAttribute("hidden"); // Open Map
+    document.getElementById("game-panel").removeAttribute("hidden"); // Open Game Panel
+}
+
+// Event Listeners 
+
+// Start Button 
+document.getElementById("start-btn").addEventListener("click", startGame);
+
+
 // Locations : 
 // CSUN Santa Susana Hall—D2
 // CSUN C.R. Johnson Auditorium—D5

@@ -6,8 +6,9 @@
     Black 20%  : #d1d3d4 (RGB: 209 211 212)
     White      : #FFFFFF (RGB: 255 255 255)
 
-    PMS 7417 C : #e3503e (RGB: 225 79 61)
     PMS GREEN  : #00ac85 (RGB: 0 172 133)
+    PMS 7408 C : f7bf0a (RGB: 247 191 10)
+    PMS 7417 C : #e3503e (RGB: 225 79 61)
     PMS 652 C  : #7e9ccc (RGB: 126 156 204)
 */
 
@@ -22,12 +23,13 @@
     --bg-color: Black;
     --csu-red: #C91235;
     --font-color: White;
-    --hint-red: #e3503e;
     --black-60: #808285;
     --black-40: #a7a9ac;
     --black-20: #d1d3d4;
-    --hint-green: #00ac85;
+    --hint-red: #e3503e;
     --mute-blue: #7e9ccc;
+    --hint-green: #00ac85;
+    --hint-yellow: #f7bf0a;
 }
 
 /* Global Styles */
@@ -59,6 +61,7 @@ a {
 
 /* Header */
 header { /* Default */
+    z-index: 1;
     display: flex;
     position: fixed;
     padding: 0 20px;
@@ -70,6 +73,7 @@ header { /* Default */
 
 /* Footer */
 footer { /* Default */
+    z-index: 1;
     display: flex;
     position: fixed;
     height: var(--fh);
@@ -121,13 +125,13 @@ button:hover { /* While Hovering */
 }
 
 /* Dialog */
-dialog { 
+dialog {
     width: 50%;
     z-index: 2;
-    padding: 1em;
     color: inherit;
     max-width: 100%;
-    /* Change Border Later (?) */
+    margin: 10em 20em;
+    border: none;
     background: black; /* Change to Transparent Later and set background on class/id*/
 }
 
@@ -157,9 +161,58 @@ dialog {
     color: var(--black-40);
 }
 
+
+/* Sidebar */
 #sidebar { 
-    width: var(--sw);
     flex-shrink: 0;
+    width: var(--sw);    
+    border-right: 2px solid var(--csu-red);
+}
+
+.panel { /* Panels */
+    flex: 1;
+    gap: 14px;
+    padding: 24px 18px;
+    flex-direction: column;
+    border: 10px solid var(--csu-red);
+}
+
+.panel h2 {
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    color: var(--csu-red);
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--black-60);
+}
+
+/* Intro Panel */
+#intro-panel ul { 
+    line-height: 1.8;
+    list-style: none;
+    text-indent: 1em;
+    font-size: 1rem;
+    padding-left: 16px;
+    color: var(--black-40);
+}
+
+/* Selection Box - Color Guide */
+ul #color-guide { 
+    line-height: 2;
+    text-indent: 2em;
+    color: var(--black-60);
+}
+
+.red-select {
+    color: var(--hint-red);
+}
+
+.green-select { 
+    color: var(--hint-green);
+}
+
+.yellow-select { 
+    color: var(--hint-yellow);
 }
 
 /* Map Container */
