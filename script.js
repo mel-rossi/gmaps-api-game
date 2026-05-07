@@ -2,7 +2,7 @@
 
 let map; // Map
 let question = 0; // Question number
-const TOLERANCE: 60; // in meters
+const TOLERANCE = 60; // in meters
 
 const LOCATIONS = [ // Locations
     { name: "Black House",                 grid: "B6", lat: 34.2436, lng: -118.5233 },
@@ -72,7 +72,7 @@ function handleClick(clickedLatLng) {
     const correctLatLng = new google.maps.latLng(loc.lat, loc.lng);
 
     // Calculate distance between click and correct location 
-    const distance = google.maps.geometry.spherical, computeDistanceBetween(
+    const distance = google.maps.geometry.spherical.computeDistanceBetween(
         clickedLatLng,
         correctLatLng
     );
@@ -90,7 +90,7 @@ function handleClick(clickedLatLng) {
 document.getElementById("start-btn").addEventListener("click", startGame);
 
 // Double Click Event
-map.addListener("dbclick", function(e) { 
+map.addListener("dblclick", function(e) { 
     handleClick(event.latLng);
 });
 
