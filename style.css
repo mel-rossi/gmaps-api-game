@@ -8,4 +8,162 @@
 
     PMS 7417 C : #e3503e (RGB: 225 79 61)
     PMS GREEN  : #00ac85 (RGB: 0 172 133)
+    PMS 652 C  : #7e9ccc (RGB: 126 156 204)
 */
+
+/* Global Variables for ease of relative consistency */
+:root { 
+    /* Layout Measurements */
+    --hh:  70px; /* Header Height */
+    --fh:  150px; /* Footer Height */
+    --sw: 280px; /* Sidebar Width */
+    
+    /* Colors */
+    --bg-color: Black;
+    --csu-red: #C91235;
+    --font-color: White;
+    --hint-red: #e3503e;
+    --black-60: #808285;
+    --black-40: #a7a9ac;
+    --black-20: #d1d3d4;
+    --hint-green: #00ac85;
+    --mute-blue: #7e9ccc;
+}
+
+/* Global Styles */
+body {
+    z-index: 0;
+    height: 100vh;
+    color: var(--font-color);
+    overflow: hidden;
+    position: relative; 
+    background: var(--bg-color);
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* Main */
+main {
+    left: 0;
+    right: 0;
+    display: flex;
+    position: fixed;
+    top: var(--hh);
+    bottom: var(--fh);
+}
+
+/* Hyperlinks */
+a { 
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Header */
+header { /* Default */
+    display: flex;
+    position: fixed;
+    padding: 0 20px;
+    height: var(--hh);
+    top: 0; left: 0; right: 0;
+    justify-content: space-between;
+    border-bottom: 4px solid var(--csu-red);
+}
+
+/* Footer */
+footer { /* Default */
+    display: flex;
+    position: fixed;
+    height: var(--fh);
+    align-items: center;
+    flex-direction: column;
+    bottom: 0; left: 0; right: 0;
+    justify-content: space-between;
+    border-top: 1px solid var(--black-60);
+}
+
+footer a { 
+    padding: 0.3em;
+    font-size: 1.2em;
+    margin-top: 10px;
+    border-radius: 5px;    
+    border: 1px solid var(--font-color);
+}
+
+footer p {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--black-60);
+    margin-bottom: 5em;
+}
+
+footer pre { 
+    font-family: 'Courier New', Courier, monospace;
+}
+
+/* Buttons */
+button { /* Default */
+    width: 100%;
+    border: none;
+    padding: 10px 0;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: auto;
+    font-size: 0.95rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: var(--csu-red);
+    transition: background 0.15s ease;
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+button:hover { /* While Hovering */
+    background: var(--mute-blue);
+}
+
+/* Dialog */
+dialog { 
+    width: 50%;
+    z-index: 2;
+    padding: 1em;
+    color: inherit;
+    max-width: 100%;
+    /* Change Border Later (?) */
+    background: black; /* Change to Transparent Later and set background on class/id*/
+}
+
+/* Header Sections */
+#preface { /* Preface / Header Intro */ 
+    gap: 12px;
+    display: flex;
+    align-items: center;
+}
+
+#preface h1 { /* "Campus Map Quiz" */
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+#logo-block { /* CSUN Logo */
+    font-size: 1rem;
+    font-weight: 900;
+    padding: 5px 10px;
+    border-radius: 3px;
+    letter-spacing: 2px;
+    background: var(--csu-red);
+}
+
+#subtitle { /* Subtitle ("Let's explore...") */
+    font-size: 0.75rem;
+    color: var(--black-40);
+}
+
+#sidebar { 
+    width: var(--sw);
+    flex-shrink: 0;
+}
+
+/* Map Container */
+#map {
+    flex: 1; 
+    height: 100%;
+}

@@ -9,7 +9,7 @@
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> <!-- jQuery -->
-    <script src="script.js" defer></script> <!-- Core Functionality -->
+    <script src="script.js" async></script> <!-- Core Functionality -->
     <script src="config.js"></script> <!-- Google Maps Demo API -->
 
     <!-- Style Sheets (CSS, Fonts, etc)-->
@@ -63,14 +63,15 @@
         <aside id="sidebar">
             
             <!-- Intro Panel (Before Game Starts) -->
-            <dialog id="intro-panel" class="panel" open> 
+            <dialog id="intro-panel" class="panel"> <!-- Set to open later -->
                 <h2>Game Instructions</h2>
 
                 <ul>
-                    <li>Double-click on the map to select a location.</li>
                     <li>There a total of 5 locations.</li>
+                    <li>Double-click on the map to select a location.</li>
                     <li>Accuracy and speed both count towards your final score.</li>
                     <li>The selection box will turn green if you're correct and red if not.</li>
+                    <li></li>
                     <li>Good Luck!</li>
                 </ul>
 
@@ -133,9 +134,9 @@
     <footer>
         <a href="https://github.com/mel-rossi/gmaps-api-game">&#x24D8; Source Code</a>
 
-        <p>CSUN Campus Map Quiz &mdash; JavaScript Project &mdash; Powered by Google Maps API</p>
-
         <pre>Copyright © 2026 Mel Rossi Rodrigues. All rights reserved.</pre>
+
+        <p>CSUN Campus Map Quiz &mdash; JavaScript Project &mdash; Powered by Google Maps API</p>
     </footer>
 </body>
 </html>
