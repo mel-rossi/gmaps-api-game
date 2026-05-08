@@ -5,7 +5,6 @@ let guesses = 0; // Number of guesses
 let question = 0; // Question number
 let squares = []; // Global — stores all drawn squares
 let canClick = true; // Ability to Double Click
-const TOLERANCE = 50; // in meters
 const mapObj = document.getElementById("map"); // Map Object
 const logBox = document.getElementById("log-box"); // Log Box
 const startBtn = document.getElementById("start-btn"); // Start Button
@@ -16,7 +15,7 @@ const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
 
 const LOCATIONS = [ // Locations
-    { name: "Black House",                 lat: 34.24423, lng: -118.53347, radiusLat: 0.0002, radiusLng: 0.0002}, // 34.24423209839369, -118.53347399047601
+    { name: "Black House",                 lat: 34.24419, lng: -118.53349, radiusLat: 0.00015, radiusLng: 0.00015}, // 34.24423209839369, -118.53347399047601
     { name: "Santa Susana Hall",           lat: 34.23761, lng: -118.52929, radiusLat: 0.0003, radiusLng: 0.0002}, // 34.23761669967139, -118.52929639179706
     { name: "C.R. Johnson Auditorium",     lat: 34.24145, lng: -118.52893, radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.24145410600543, -118.52893946524159
     { name: "Student Recreation Center",   lat: 34.23998, lng: -118.52493, radiusLat: 0.0007, radiusLng: 0.0003 }, // 34.24008973871634, -118.52493133092779
@@ -122,11 +121,14 @@ function handleClick(clickedLatLng) {
     const loc = LOCATIONS[question];
     const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
-    // Calculate distance between click and correct location 
-    const distance = google.maps.geometry.spherical.computeDistanceBetween(
-        clickedLatLng,
-        correctLatLng
+    // Check if click is inside location bounds 
+    
+    const bounds = new google.maps.LatLngBounds(
+        new google.maps.LatLng(loc.lat - (loc.radiusLat + 0.0001), loc.lng - (loc.radiusLng + 0.0001)), // SW corner
+        new google.maps.LatLng(loc.lat + (loc.radiusLat + 0.0001), loc.lng + (loc.radiusLng + 0.0001))  // NE corner
     );
+
+    const withinBounds = bounds.contains(clickedLatLng);
 
     // Feedback box inside current question block
     const currentBlock = document.getElementById(`question-${question}`);
@@ -136,7 +138,7 @@ function handleClick(clickedLatLng) {
     const entry = document.createElement("p");
 
     // Correct Guess
-    if (distance <= TOLERANCE) { 
+    if (withinBounds) { 
         // Disable game interactions
         canClick = false; 
 
@@ -197,7 +199,7 @@ function nextQuestion() {
     if (canClick) {
         const loc = LOCATIONS[question];
         const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
-        
+
         const currentFeedback = currentBlock.querySelector(".feedback-box");
         
         const entry = document.createElement("p");
