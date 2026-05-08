@@ -16,11 +16,11 @@ const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
 
 const LOCATIONS = [ // Locations
-    { name: "Black House",                 lat: 34.2443, lng: -118.5335, radiusLat: 0.0002, radiusLng: 0.0003}, // 34.24429530144279, -118.53346905919547
-    { name: "Santa Susana Hall",           lat: 34.2378, lng: -118.5292, radiusLat: 0.0002, radiusLng: 0.0003}, // 34.237764496321304, -118.52925278675212
-    { name: "C.R. Johnson Auditorium",     lat: 34.2416, lng: -118.5289, radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.24162099634369, -118.52890118675215
-    { name: "Student Recreation Center",   lat: 34.2399, lng: -118.5249, radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.2399535646986, -118.52492078888514
-    { name: "Extended University Commons", lat: 34.2407, lng: -118.532,  radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.24068388239442, -118.53267432657252
+    { name: "Black House",                 lat: 34.24423, lng: -118.53347, radiusLat: 0.0002, radiusLng: 0.0002}, // 34.24423209839369, -118.53347399047601
+    { name: "Santa Susana Hall",           lat: 34.23761, lng: -118.52929, radiusLat: 0.0003, radiusLng: 0.0002}, // 34.23761669967139, -118.52929639179706
+    { name: "C.R. Johnson Auditorium",     lat: 34.24145, lng: -118.52893, radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.24145410600543, -118.52893946524159
+    { name: "Student Recreation Center",   lat: 34.23998, lng: -118.52493, radiusLat: 0.0007, radiusLng: 0.0003 }, // 34.24008973871634, -118.52493133092779
+    { name: "Extended University Commons", lat: 34.24055, lng: -118.53271,  radiusLat: 0.00015, radiusLng: 0.0003 }, // 34.240701690440645, -118.5327172309279
 ];
 
 // Map Initialization 
@@ -140,25 +140,37 @@ function handleClick(clickedLatLng) {
         // Disable game interactions
         canClick = false; 
 
+        // Feedback Entry Cretion for a Correct Guess
         entry.className = "feedback-correct";
-        entry.innerHTML = `You guessed correctly! Great job.`;
+
+        // Feedback Entry for Correct Guess
+        entry.innerHTML = `You guessed correctly! Great job.`; 
+
         currentNextBtn.classList.add("highlight-btn") // Add Highlight to Next Button
-        drawSquare(correctLatLng, "#00ac85", loc.radiusLat, loc.radiusLng);
+
+        // Draw Green Selection Box
+        drawSquare(correctLatLng, "#00ac85", loc.radiusLat, loc.radiusLng); 
     } else { // Wrong Guess 
         
         guesses++; // Increment Guesses 
 
+        // Feedback Entry Creation for a Wrong Guess
         entry.className = "feedback-wrong";
 
-        // All guesses wrong 
-        if (guesses >= 3) {
+        if (guesses >= 3) { // Out of guesses
             // Disable game interactions 
             canClick = false;
 
+            // Feedback Entry for Last Wrong Guess
             entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
+
             currentNextBtn.classList.add("highlight-btn"); // Add Highlight to Next Button 
-            drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng);
-        } else { // 1st or 2nd guess wrong 
+
+            // Draw Red Selection Box over correct location 
+            drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng); 
+        } else { // 1 or 2 guesses left 
+
+            // Feedback Entry for Wrong Guess (not last)
             entry.innerHTML = 
                 `❌ Sorry, wrong location. ${3 - guesses} 
                 guess${3 - guesses > 1 ? "es" : ""} remaining.`;
@@ -181,14 +193,25 @@ function nextQuestion() {
     const currentNextBtn = currentBlock.querySelector(".next-btn");
     currentNextBtn.classList.remove("highlight-btn")
     
-    // Skipped remaing tries
+    // Skip Remaining Guesses
     if (canClick) {
+        const loc = LOCATIONS[question];
+        const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
+        
         const currentFeedback = currentBlock.querySelector(".feedback-box");
         
         const entry = document.createElement("p");
-        entry.className = "feedback-wrong"; 
+
+        // Feedback Entry Creation for Skipping Guesses
+        entry.className = "feedback-skip"; 
+
+        // Feedback Entry for Skipping Guesses 
         entry.innerHTML = `Remaining tries skipped. Question marked as wrong.`;
+
         currentFeedback.appendChild(entry);
+
+        // Draw Red Selection Box over correct location 
+        drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng); 
     } else { 
         canClick = true; // Re-enable clicks
     }
@@ -229,7 +252,7 @@ function endGame() {
 
 // Restart the Game 
 function restartGame() { 
-    clearSquares();
+    clearSquares(); 
 }
 
 // Clear Selection Boxes
