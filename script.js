@@ -3,6 +3,7 @@
 let map; // Map
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
+let squares = []; // Global — stores all drawn squares
 let canClick = true; // Ability to Double Click
 const TOLERANCE = 50; // in meters
 const mapObj = document.getElementById("map"); // Map Object
@@ -13,12 +14,13 @@ const alertPanel = document.getElementById("alert-panel"); // Alert Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
+
 const LOCATIONS = [ // Locations
-    { name: "Black House",                 lat: 34.2443, lng: -118.5335 }, // 34.24429530144279, -118.53346905919547
-    { name: "Santa Susana Hall",           lat: 34.2378, lng: -118.5292 }, // 34.237764496321304, -118.52925278675212
-    { name: "C.R. Johnson Auditorium",     lat: 34.2416, lng: -118.5289 }, // 34.24162099634369, -118.52890118675215
-    { name: "Student Recreation Center",   lat: 34.2399, lng: -118.5249 }, // 34.2399535646986, -118.52492078888514
-    { name: "Extended University Commons", lat: 34.2407, lng: -118.5327 }, // 34.24068388239442, -118.53267432657252
+    { name: "Black House",                 lat: 34.2443, lng: -118.5335, radiusLat: 0.0002, radiusLng: 0.0003}, // 34.24429530144279, -118.53346905919547
+    { name: "Santa Susana Hall",           lat: 34.2378, lng: -118.5292, radiusLat: 0.0002, radiusLng: 0.0003}, // 34.237764496321304, -118.52925278675212
+    { name: "C.R. Johnson Auditorium",     lat: 34.2416, lng: -118.5289, radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.24162099634369, -118.52890118675215
+    { name: "Student Recreation Center",   lat: 34.2399, lng: -118.5249, radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.2399535646986, -118.52492078888514
+    { name: "Extended University Commons", lat: 34.2407, lng: -118.532,  radiusLat: 0.0002, radiusLng: 0.0003 }, // 34.24068388239442, -118.53267432657252
 ];
 
 // Map Initialization 
@@ -141,6 +143,7 @@ function handleClick(clickedLatLng) {
         entry.className = "feedback-correct";
         entry.innerHTML = `You guessed correctly! Great job.`;
         currentNextBtn.classList.add("highlight-btn") // Add Highlight to Next Button
+        drawSquare(correctLatLng, "#00ac85", loc.radiusLat, loc.radiusLng);
     } else { // Wrong Guess 
         
         guesses++; // Increment Guesses 
@@ -154,6 +157,7 @@ function handleClick(clickedLatLng) {
 
             entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
             currentNextBtn.classList.add("highlight-btn"); // Add Highlight to Next Button 
+            drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng);
         } else { // 1st or 2nd guess wrong 
             entry.innerHTML = 
                 `❌ Sorry, wrong location. ${3 - guesses} 
@@ -199,10 +203,39 @@ function nextQuestion() {
     }
 }
 
+// Final Selection Box (Correct Location)
+function drawSquare(center, color, radiusLat, radiusLng) {
+    const square = new google.maps.Rectangle({
+        map: map,
+        bounds: {
+            north: center.lat() + radiusLat,
+            south: center.lat() - radiusLat,
+            east:  center.lng() + radiusLng,
+            west:  center.lng() - radiusLng,
+        },
+        strokeColor: color,
+        fillColor: color,
+        strokeWeight: 2,
+        fillOpacity: 0.3,
+    });
+    squares.push(square);
+}
+
 // End Game 
 function endGame() { 
     gamePanel.setAttribute("hidden", ""); // Hide Game Panel
     resultsPanel.show(); // Open Results Panel
+}
+
+// Restart the Game 
+function restartGame() { 
+    clearSquares();
+}
+
+// Clear Selection Boxes
+function clearSquares() { 
+    squares.forEach(s => s.setMap(null));
+    squares = [];
 }
 
 // Event Listeners 
