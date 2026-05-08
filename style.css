@@ -130,13 +130,17 @@ button:hover { /* While Hovering */
 
 /* Dialog */
 dialog {
-    width: 50%;
     z-index: 2;
+    border: none;
     color: inherit;
     max-width: 100%;
-    margin: 10em 20em;
-    border: none;
-    background: black; /* Change to Transparent Later and set background on class/id*/
+    max-height: 100%;
+    position: fixed;
+    width: fit-content;
+    height: fit-content;
+    top: 50%; left: 50%;
+    background: transparent;
+    transform: translate(-100%, -100%);
 }
 
 /* Header Sections */
@@ -179,6 +183,8 @@ dialog {
     gap: 14px;
     padding: 24px 18px;
     flex-direction: column;
+    color: var(--font-color);
+    background: var(--bg-color);
     border: 10px solid var(--csu-red);
 }
 
@@ -191,21 +197,26 @@ dialog {
     border-bottom: 1px solid var(--black-60);
 }
 
+/* Intro & Game Over Panel */ 
+#intro-panel, #results-panel { 
+    transform: translate(-50%, -70%);
+}
+
 /* Intro Panel */
 #intro-panel ul { 
+    font-size: 1rem;
     line-height: 1.8;
     list-style: none;
     text-indent: 1em;
-    font-size: 1rem;
     padding-left: 16px;
-    color: var(--black-40);
+    color: var(--black-20);
 }
 
 /* Selection Box - Color Guide */
 ul #color-guide { 
     line-height: 2;
     text-indent: 2em;
-    color: var(--black-60);
+    color: var(--black-40);
 }
 
 .red-select {
@@ -246,11 +257,18 @@ ul #color-guide {
     color: var(--highlight);
 }
 
+/* Highlight Next Btn */
+.highlight-btn { 
+    background: var(--highlight);
+    animation: pulse 1000s infinite;
+}
+
 /* Map Container */
 #map {
     flex: 1; 
     height: 100%;
     overflow: hidden;
+    position: relative;
 }
 
 .hidden { 

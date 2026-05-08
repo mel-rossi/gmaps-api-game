@@ -1,12 +1,15 @@
 // Global Variables 
 
 let map; // Map
+let guesses = 0; // Number of guesses
 let question = 0; // Question number
+let canClick = true; // Ability to Double Click
 const TOLERANCE = 3000; // in meters
 const mapObj = document.getElementById("map"); // Map Object
-const logBox = document.getElementById("log-box");
+const logBox = document.getElementById("log-box"); // Log Box
 const startBtn = document.getElementById("start-btn"); // Start Button
 const gamePanel = document.getElementById("game-panel"); // Game Panel
+const alertPanel = document.getElementById("alert-panel"); // Alert Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
@@ -84,7 +87,7 @@ function loadQuestion(i) {
         <h3>Where is <span class="bld-name">${loc.name}</span> ?</h2>
 
         <!-- Live Feedback & Progress -->
-        <div id="feedback-box">
+        <div class="feedback-box">
         </div>
 
         <!-- Next Button --> 
@@ -108,17 +111,40 @@ function loadQuestion(i) {
 
 // Demo Handle Click
 function demoHandleClick(bool) {
+     // Ignore clicks if not allowed
+    if (!canClick) { 
+        alertPanel.show();
+        return;
+    }
+
     const loc = LOCATIONS[question];
 
     // Feedback box inside current question block
     const currentBlock = document.getElementById(`question-${question}`);
-    const currentFeedback = currentBlock.querySelector("#feedback-box");
+    const currentFeedback = currentBlock.querySelector(".feedback-box");
+    const currentNextBtn = currentBlock.querySelector(".next-btn");
 
     const entry = document.createElement("p");
-    entry.className = bool ? "feedback-correct" : "feedback-wrong";
-    entry.innerHTML = bool
-        ? `You guessed correctly! Great job.`
-        : `Sorry, wrong location.`;
+
+    if (bool) { 
+        entry.className = "feedback-correct";
+        entry.innerHTML = `You guessed correctly! Great job.`;
+        canClick = false;
+        currentNextBtn.classList.add("highlight-btn")
+    } else { 
+        guesses++;
+        if (guesses >= 3) {
+            entry.className = "feedback-wrong";
+            entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
+            canClick = false;
+            currentNextBtn.classList.add("highlight-btn");
+        } else {
+            entry.className = "feedback-wrong";
+            entry.innerHTML = 
+                `❌ Sorry, wrong location. ${3 - guesses} 
+                guess${3 - guesses > 1 ? "es" : ""} remaining.`;
+        }
+    }
 
     currentFeedback.appendChild(entry);
 }
@@ -143,7 +169,32 @@ function handleClick(clickedLatLng) {
 
 // Move to Next Question 
 function nextQuestion() { 
+    guesses = 0; // Reset Guesses
     this.disabled = true; // Disable clicked Next button 
+    // Close any Alert Panels that are open
+    if (alertPanel == open) {
+        alertPanel.close(); 
+    }
+
+    // Current Question Block
+    const currentBlock = document.getElementById(`question-${question}`);
+
+    // Remove Highlight from current next button   
+    const currentNextBtn = currentBlock.querySelector(".next-btn");
+    currentNextBtn.classList.remove("highlight-btn")
+    
+    // Skipped remaing tries
+    if (canClick) {
+        const currentFeedback = currentBlock.querySelector(".feedback-box");
+        
+        const entry = document.createElement("p");
+        entry.className = "feedback-wrong"; 
+        entry.innerHTML = `Remaining tries skipped. Question marked as wrong.`;
+        currentFeedback.appendChild(entry);
+    } else { 
+        canClick = true; // Re-enable clicks
+    }
+
     question++; 
 
     // If all questions have been answered End the Game
