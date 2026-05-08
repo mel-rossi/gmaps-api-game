@@ -257,12 +257,6 @@ ul #color-guide {
     color: var(--highlight);
 }
 
-/* Highlight Next Btn */
-.highlight-btn { 
-    background: var(--highlight);
-    animation: pulse 1000s infinite;
-}
-
 /* Map Container */
 #map {
     flex: 1; 

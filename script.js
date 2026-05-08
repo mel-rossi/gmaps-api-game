@@ -92,7 +92,7 @@ function loadQuestion(i) {
         </div>
 
         <!-- Next Button --> 
-        <button class="next-btn", id="${i}-next-btn">Next</button>
+        <button class="next-btn", id="${i}-next-btn">Skip</button>
     `;
     
     // Append Question block to log box 
@@ -148,10 +148,11 @@ function handleClick(clickedLatLng) {
         // Feedback Entry for Correct Guess
         entry.innerHTML = `You guessed correctly! Great job.`; 
 
-        currentNextBtn.classList.add("highlight-btn") // Add Highlight to Next Button
-
         // Draw Green Selection Box
         drawSquare(correctLatLng, "#00ac85", loc.radiusLat, loc.radiusLng); 
+
+        // Advance to next question 
+        nextQuestion.call(currentNextBtn); 
     } else { // Wrong Guess 
         
         guesses++; // Increment Guesses 
@@ -166,10 +167,11 @@ function handleClick(clickedLatLng) {
             // Feedback Entry for Last Wrong Guess
             entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
 
-            currentNextBtn.classList.add("highlight-btn"); // Add Highlight to Next Button 
-
             // Draw Red Selection Box over correct location 
             drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng); 
+
+            // Call the next question
+            nextQuestion.call(currentNextBtn);
         } else { // 1 or 2 guesses left 
 
             // Feedback Entry for Wrong Guess (not last)
@@ -187,13 +189,6 @@ function nextQuestion() {
     guesses = 0; // Reset Guesses
     this.disabled = true; // Disable clicked Next button 
     alertPanel.close(); // Close any Alert Panels that are open
-
-    // Current Question Block
-    const currentBlock = document.getElementById(`question-${question}`);
-
-    // Remove Highlight from current next button   
-    const currentNextBtn = currentBlock.querySelector(".next-btn");
-    currentNextBtn.classList.remove("highlight-btn")
     
     // Skip Remaining Guesses
     if (canClick) {
