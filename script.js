@@ -4,7 +4,7 @@ let map; // Map
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
 let canClick = true; // Ability to Double Click
-const TOLERANCE = 3000; // in meters
+const TOLERANCE = 50; // in meters
 const mapObj = document.getElementById("map"); // Map Object
 const logBox = document.getElementById("log-box"); // Log Box
 const startBtn = document.getElementById("start-btn"); // Start Button
@@ -14,11 +14,11 @@ const introPanel = document.getElementById("intro-panel"); // Intro Panel
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 
 const LOCATIONS = [ // Locations
-    { name: "Black House",                 grid: "B6", lat: 34.2436, lng: -118.5233 },
-    { name: "Santa Susana Hall",           grid: "D2", lat: 34.2446, lng: -118.5298 },
-    { name: "C.R. Johnson Auditorium",     grid: "D5", lat: 34.2417, lng: -118.5251 },
-    { name: "Student Recreation Center",   grid: "G4", lat: 34.2381, lng: -118.5262 },
-    { name: "Extended University Commons", grid: "B4", lat: 34.2440, lng: -118.5263 },
+    { name: "Black House",                 lat: 34.2443, lng: -118.5335 }, // 34.24429530144279, -118.53346905919547
+    { name: "Santa Susana Hall",           lat: 34.2378, lng: -118.5292 }, // 34.237764496321304, -118.52925278675212
+    { name: "C.R. Johnson Auditorium",     lat: 34.2416, lng: -118.5289 }, // 34.24162099634369, -118.52890118675215
+    { name: "Student Recreation Center",   lat: 34.2399, lng: -118.5249 }, // 34.2399535646986, -118.52492078888514
+    { name: "Extended University Commons", lat: 34.2407, lng: -118.5327 }, // 34.24068388239442, -118.53267432657252
 ];
 
 // Map Initialization 
@@ -68,7 +68,7 @@ function initMap() {
 // Start Playing
 function startGame() { 
     introPanel.close(); // Close Intro Panel
-    // mapObj.removeAttribute("hidden"); // Open Map
+    mapObj.removeAttribute("hidden"); // Open Map
     gamePanel.removeAttribute("hidden"); // Open Game Panel
 
     loadQuestion(question) // Load first question 
@@ -109,48 +109,14 @@ function loadQuestion(i) {
     block.scrollIntoView({ behavior: "smooth" });
 }
 
-// Demo Handle Click
-function demoHandleClick(bool) {
-     // Ignore clicks if not allowed
-    if (!canClick) { 
-        alertPanel.show();
-        return;
-    }
-
-    const loc = LOCATIONS[question];
-
-    // Feedback box inside current question block
-    const currentBlock = document.getElementById(`question-${question}`);
-    const currentFeedback = currentBlock.querySelector(".feedback-box");
-    const currentNextBtn = currentBlock.querySelector(".next-btn");
-
-    const entry = document.createElement("p");
-
-    if (bool) { 
-        entry.className = "feedback-correct";
-        entry.innerHTML = `You guessed correctly! Great job.`;
-        canClick = false;
-        currentNextBtn.classList.add("highlight-btn")
-    } else { 
-        guesses++;
-        if (guesses >= 3) {
-            entry.className = "feedback-wrong";
-            entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
-            canClick = false;
-            currentNextBtn.classList.add("highlight-btn");
-        } else {
-            entry.className = "feedback-wrong";
-            entry.innerHTML = 
-                `❌ Sorry, wrong location. ${3 - guesses} 
-                guess${3 - guesses > 1 ? "es" : ""} remaining.`;
-        }
-    }
-
-    currentFeedback.appendChild(entry);
-}
-
 // Double Click on Map (Come back when Demo Key limit resets)
 function handleClick(clickedLatLng) { 
+    // Ignore if clicks are not allowed
+    if (!canClick) { 
+        alertPanel.show(); 
+        return; 
+    }
+
     const loc = LOCATIONS[question];
     const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
@@ -160,21 +126,49 @@ function handleClick(clickedLatLng) {
         correctLatLng
     );
 
+    // Feedback box inside current question block
+    const currentBlock = document.getElementById(`question-${question}`);
+    const currentFeedback = currentBlock.querySelector(".feedback-box");
+    const currentNextBtn = currentBlock.querySelector(".next-btn");
+
+    const entry = document.createElement("p");
+
+    // Correct Guess
     if (distance <= TOLERANCE) { 
-        console.log("Correct!");
-    } else { 
-        console.log("Wrong!");
+        // Disable game interactions
+        canClick = false; 
+
+        entry.className = "feedback-correct";
+        entry.innerHTML = `You guessed correctly! Great job.`;
+        currentNextBtn.classList.add("highlight-btn") // Add Highlight to Next Button
+    } else { // Wrong Guess 
+        
+        guesses++; // Increment Guesses 
+
+        entry.className = "feedback-wrong";
+
+        // All guesses wrong 
+        if (guesses >= 3) {
+            // Disable game interactions 
+            canClick = false;
+
+            entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
+            currentNextBtn.classList.add("highlight-btn"); // Add Highlight to Next Button 
+        } else { // 1st or 2nd guess wrong 
+            entry.innerHTML = 
+                `❌ Sorry, wrong location. ${3 - guesses} 
+                guess${3 - guesses > 1 ? "es" : ""} remaining.`;
+        }
     }
+
+    currentFeedback.appendChild(entry);
 }
 
 // Move to Next Question 
 function nextQuestion() { 
     guesses = 0; // Reset Guesses
     this.disabled = true; // Disable clicked Next button 
-    // Close any Alert Panels that are open
-    if (alertPanel == open) {
-        alertPanel.close(); 
-    }
+    alertPanel.close(); // Close any Alert Panels that are open
 
     // Current Question Block
     const currentBlock = document.getElementById(`question-${question}`);
@@ -215,15 +209,3 @@ function endGame() {
 
 // Start Button 
 startBtn.addEventListener("click", startGame);
-
-// Demo Double Click (while map is out of daily use) - Remove later 
-mapObj.addEventListener("dblclick", function(e) {
-    e.stopPropagation();
-    demoHandleClick(true);
-}); 
-
-document.addEventListener("dblclick", function(e) { 
-    if (e.target.id !== "map") { 
-        demoHandleClick(false); 
-    }
-});
