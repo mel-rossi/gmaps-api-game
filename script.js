@@ -5,12 +5,12 @@ let score = 0; // Number of correct answers
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
 let squares = []; // Global — stores all drawn squares
-let canClick = true; // Ability to Double Click
 const mapObj = document.getElementById("map"); // Map Object
 const logBox = document.getElementById("log-box"); // Log Box
 const startBtn = document.getElementById("start-btn"); // Start Button
 const gamePanel = document.getElementById("game-panel"); // Game Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
+const restartBtn = document.getElementById("restart-btn"); // Restart Button
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 const scoreDisplay = document.getElementById("score-display"); // Live Score Display 
 const timerDisplay = document.getElementById("timer-display"); // Live Timer Display 
@@ -139,7 +139,9 @@ function loadQuestion(i) {
 
     // Enable Next Button on latest question 
     block.querySelector(".next-btn").disabled = false; 
-    block.querySelector(".next-btn").addEventListener("click", nextQuestion);
+    block.querySelector(".next-btn").addEventListener("click", function() { 
+        nextQuestion.call(this, true);
+    });
 
     // Scroll to latest question 
     block.scrollIntoView({ behavior: "smooth" });
@@ -173,8 +175,6 @@ function handleClick(clickedLatLng) {
 
     // Correct Guess
     if (withinBounds) { 
-        // Disable game interactions
-        canClick = false; 
 
         score++; // Increment score 
         updateStats(); // Update live stats
@@ -200,8 +200,6 @@ function handleClick(clickedLatLng) {
         entry.className = "feedback-wrong";
 
         if (guesses >= 3) { // Out of guesses
-            // Disable game interactions 
-            canClick = false;
 
             // Feedback Entry for Last Wrong Guess
             entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
@@ -224,18 +222,18 @@ function handleClick(clickedLatLng) {
 }
 
 // Move to Next Question 
-function nextQuestion() { 
+function nextQuestion(isSkip = false) { 
     guesses = 0; // Reset Guesses
     this.disabled = true; // Disable clicked Next button 
     
     // Skip Remaining Guesses
-    if (canClick) {
-        const loc = LOCATIONS[question];
-        const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
+    const loc = LOCATIONS[question];
+    const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
-        const currentBlock = document.getElementById(`question-${question}`);
-        const currentFeedback = currentBlock.querySelector(".feedback-box");
-        
+    const currentBlock = document.getElementById(`question-${question}`);
+    const currentFeedback = currentBlock.querySelector(".feedback-box");
+    
+    if (isSkip) { 
         const entry = document.createElement("p");
 
         // Feedback Entry Creation for Skipping Guesses
@@ -248,9 +246,7 @@ function nextQuestion() {
 
         // Draw Red Selection Box over correct location 
         drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng); 
-    } else { 
-        canClick = true; // Re-enable clicks
-    }
+    } 
 
     question++; 
 
@@ -313,13 +309,35 @@ function updateStats() {
 // End Game 
 function endGame() { 
     stopTimer(); // Stop timer
-    gamePanel.setAttribute("hidden", ""); // Hide Game Panel
+    mapObj.setAttribute("hidden", ""); // Hide Map 
     resultsPanel.show(); // Open Results Panel
 }
 
 // Restart the Game 
 function restartGame() { 
+    // Reset variables
+    score = 0; 
+    question = 0; 
+    guesses = 0; 
+
+    // Clear Selection Boxes for correct locations
     clearSquares(); 
+
+    // Clear log box
+    logBox.innerHTML = ""; 
+
+    // Reset Live Stats Display 
+    updateStats(); 
+    timerDisplay.innerHTML = "0.00"; 
+
+    // Close Game Over Panel 
+    resultsPanel.close(); 
+
+    // Hide Game Panel 
+    gamePanel.setAttribute("hidden", "");
+
+    // Show Game Instructions 
+    introPanel.setAttribute("open", ""); 
 }
 
 // Clear Selection Boxes
@@ -332,3 +350,6 @@ function clearSquares() {
 
 // Start Button 
 startBtn.addEventListener("click", startGame);
+
+// Restart Button 
+restartBtn.addEventListener("click", restartGame);
