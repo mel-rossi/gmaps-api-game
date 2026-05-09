@@ -154,8 +154,12 @@ function handleClick(clickedLatLng) {
     // Check if click is inside location bounds 
 
     const bounds = new google.maps.LatLngBounds(
-        new google.maps.LatLng(loc.lat - (loc.radiusLat + 0.0001), loc.lng - (loc.radiusLng + 0.0001)), // SW corner
-        new google.maps.LatLng(loc.lat + (loc.radiusLat + 0.0001), loc.lng + (loc.radiusLng + 0.0001))  // NE corner
+        new google.maps.LatLng(
+            loc.lat - loc.radiusLat - 0.0001, loc.lng - loc.radiusLng - 0.0001
+        ), // SW corner
+        new google.maps.LatLng(
+            loc.lat + (loc.radiusLat + 0.0001), loc.lng + (loc.radiusLng + 0.0001)
+        )  // NE corner
     );
 
     const withinBounds = bounds.contains(clickedLatLng);
@@ -189,6 +193,8 @@ function handleClick(clickedLatLng) {
     } else { // Wrong Guess 
         
         guesses++; // Increment Guesses 
+
+        tempSquare(clickedLatLng, loc.radiusLat, loc.radiusLng);
 
         // Feedback Entry Creation for a Wrong Guess
         entry.className = "feedback-wrong";
@@ -254,6 +260,28 @@ function nextQuestion() {
     } else { // Else move to the next question
         loadQuestion(question);
     }
+}
+
+// Temp Selection Box (Wrong Location)
+function tempSquare(clickedLatLng, rLat, rLng) { 
+
+    // Draw yellow square where user clicked
+    const clickSquare = new google.maps.Rectangle({
+        map: map,
+        bounds: {
+            north: clickedLatLng.lat() + (rLat + 0.0001),
+            south: clickedLatLng.lat() - (rLat - 0.0001),
+            east:  clickedLatLng.lng() + (rLng + 0.0001),
+            west:  clickedLatLng.lng() - (rLng - 0.0001),
+        },
+        strokeColor: "#f7bf0a",
+        fillColor: "#f7bf0a",
+        strokeWeight: 2,
+        fillOpacity: 0.3,
+    });
+
+    // Disappear after 1.5 seconds
+    setTimeout(() => clickSquare.setMap(null), 1500);
 }
 
 // Final Selection Box (Correct Location)
