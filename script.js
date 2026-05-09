@@ -5,11 +5,14 @@ let score = 0; // Number of correct answers
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
 let squares = []; // Global — stores all drawn squares
+let canClick = true; // Double Click Ability
+let completed = false; // Track Completion of Questions
 const mapObj = document.getElementById("map"); // Map Object
 const logBox = document.getElementById("log-box"); // Log Box
 const startBtn = document.getElementById("start-btn"); // Start Button
 const gamePanel = document.getElementById("game-panel"); // Game Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
+const alertPanel = document.getElementById("alert-panel"); // Alert Panel
 const restartBtn = document.getElementById("restart-btn"); // Restart Button
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
 const scoreDisplay = document.getElementById("score-display"); // Live Score Display 
@@ -112,6 +115,8 @@ function formatTime(ms) {
 
 // Load question 
 function loadQuestion(i) { 
+    completed = false; // Reset for new question 
+
     const loc = LOCATIONS[i]; 
 
     // Question Block 
@@ -150,6 +155,12 @@ function loadQuestion(i) {
 // Double Click on Map (Come back when Demo Key limit resets)
 function handleClick(clickedLatLng) { 
 
+    // Ignore clicks when locked
+    if (!canClick) { 
+        alertPanel.removeAttribute("hidden");
+        return; 
+    }
+
     const loc = LOCATIONS[question];
     const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
@@ -175,6 +186,7 @@ function handleClick(clickedLatLng) {
 
     // Correct Guess
     if (withinBounds) { 
+        completed = true; // All Questions Completed
 
         score++; // Increment score 
         updateStats(); // Update live stats
@@ -189,17 +201,18 @@ function handleClick(clickedLatLng) {
         drawSquare(correctLatLng, "#00ac85", loc.radiusLat, loc.radiusLng); 
 
         // Advance to next question 
-        nextQuestion.call(currentNextBtn); 
+        autoAdvance(currentNextBtn);
     } else { // Wrong Guess 
         
         guesses++; // Increment Guesses 
 
         tempSquare(clickedLatLng, loc.radiusLat, loc.radiusLng);
 
-        // Feedback Entry Creation for a Wrong Guess
-        entry.className = "feedback-wrong";
-
         if (guesses >= 3) { // Out of guesses
+            completed = true; // All Questions Completed
+
+            // Feedback Entry Creation for a Wrong Guess
+            entry.className = "feedback-wrong";
 
             // Feedback Entry for Last Wrong Guess
             entry.innerHTML = `❌ Sorry, wrong location. Out of guesses.`;
@@ -208,8 +221,10 @@ function handleClick(clickedLatLng) {
             drawSquare(correctLatLng, "#e3503e", loc.radiusLat, loc.radiusLng); 
 
             // Call the next question
-            nextQuestion.call(currentNextBtn);
+            autoAdvance(currentNextBtn);
         } else { // 1 or 2 guesses left 
+            // Feedback Entry Creation for a Guess Countdown
+            entry.className = "feedback-guess";
 
             // Feedback Entry for Wrong Guess (not last)
             entry.innerHTML = 
@@ -227,17 +242,17 @@ function nextQuestion(isSkip = false) {
     this.disabled = true; // Disable clicked Next button 
     
     // Skip Remaining Guesses
-    const loc = LOCATIONS[question];
-    const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
+    if (isSkip && !completed) { 
+        const loc = LOCATIONS[question];
+        const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
-    const currentBlock = document.getElementById(`question-${question}`);
-    const currentFeedback = currentBlock.querySelector(".feedback-box");
-    
-    if (isSkip) { 
+        const currentBlock = document.getElementById(`question-${question}`);
+        const currentFeedback = currentBlock.querySelector(".feedback-box");
+        
         const entry = document.createElement("p");
 
         // Feedback Entry Creation for Skipping Guesses
-        entry.className = "feedback-skip"; 
+        entry.className = "feedback-wrong"; 
 
         // Feedback Entry for Skipping Guesses 
         entry.innerHTML = `Remaining tries skipped. Question marked as wrong.`;
@@ -250,11 +265,40 @@ function nextQuestion(isSkip = false) {
 
     question++; 
 
-    // If all questions have been answered End the Game
-    if (question >= LOCATIONS.length) { 
-        endGame();
-    } else { // Else move to the next question
+    // Last Question reached 
+    if (question >= LOCATIONS.length) {
+        canClick = false; // Locak Map on last question 
+        stopTimer(); // Stop timer 
+
+        // Last question skipped
+        const lastBtn = 
+            document.getElementById(`question-${question - 1}`).querySelector(".next-btn");
+        lastBtn.textContent = "Game Over";
+        lastBtn.disabled = false;
+        lastBtn.addEventListener("click", gameOver);
+    } else { 
         loadQuestion(question);
+    }
+}
+
+// Call the next question 
+function autoAdvance(btn) { 
+    // Last Question
+    if (question + 1 >= LOCATIONS.length) { 
+        canClick = false; // Lock map clicks
+
+        stopTimer(); // Stop Timer 
+
+        btn.disabled = false; // Enable the Button
+
+        // Change Skip Button to Game Over Button
+        btn.innerHTML = "Game Over"; 
+        
+        const newBtn = btn.cloneNode(true); // Remove listeners 
+        btn.parentNode.replaceChild(newBtn, btn);
+        newBtn.addEventListener("click", gameOver);
+    } else { // Call the next question
+        nextQuestion.call(btn);
     }
 }
 
@@ -306,9 +350,23 @@ function updateStats() {
     
 }
 
+// Game Over Button
+function gameOver() {
+    this.disabled = true; // Disable Game Over Button 
+
+    const currentBlock = document.getElementById(`question-${question}`);
+    const currentFeedback = currentBlock.querySelector(".feedback-box");
+
+    const entry = document.createElement("p");
+    entry.className = "feedback-complete";
+    entry.innerHTML = `Game has been completed.`;
+    currentFeedback.appendChild(entry);
+
+    endGame();
+}
+
 // End Game 
 function endGame() { 
-    stopTimer(); // Stop timer
     mapObj.setAttribute("hidden", ""); // Hide Map 
     resultsPanel.show(); // Open Results Panel
 }
@@ -319,6 +377,8 @@ function restartGame() {
     score = 0; 
     question = 0; 
     guesses = 0; 
+    canClick = true;
+    completed = false; 
 
     // Clear Selection Boxes for correct locations
     clearSquares(); 
