@@ -1,6 +1,7 @@
 // Global Variables 
 
 let map; // Map
+let score = 0; // Number of correct answers
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
 let squares = []; // Global — stores all drawn squares
@@ -9,9 +10,11 @@ const mapObj = document.getElementById("map"); // Map Object
 const logBox = document.getElementById("log-box"); // Log Box
 const startBtn = document.getElementById("start-btn"); // Start Button
 const gamePanel = document.getElementById("game-panel"); // Game Panel
-const alertPanel = document.getElementById("alert-panel"); // Alert Panel
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
 const resultsPanel = document.getElementById("results-panel"); // Results Panel
+const scoreDisplay = document.getElementById("score-display"); // Live Score Display 
+const timerDisplay = document.getElementById("timer-display"); // Live Timer Display 
+const questionDisplay = document.getElementById("question-display"); // Live Question Display 
 
 
 const LOCATIONS = [ // Locations
@@ -71,8 +74,40 @@ function startGame() {
     introPanel.close(); // Close Intro Panel
     mapObj.removeAttribute("hidden"); // Open Map
     gamePanel.removeAttribute("hidden"); // Open Game Panel
+    
+    startTimer(); // Start Timer 
 
     loadQuestion(question) // Load first question 
+}
+
+// Start the Live Timer 
+function startTimer() { 
+    startTime = Date.now(); 
+    runTimer();
+}
+
+// Run the Live Timer
+function runTimer() { 
+    timerInterval = setInterval(() => { 
+        time = Date.now() - startTime; 
+        timerDisplay.innerHTML = formatTime(time);
+    }, 1000); 
+}
+
+// Stop the Live Timer 
+function stopTimer() { 
+    clearInterval(timerInterval); 
+    timerInterval = null; 
+    testRunning = false;
+
+    return time; 
+}
+
+function formatTime(ms) { 
+    const totalSeconds = Math.floor(ms / 1000);
+    const m = Math.floor(totalSeconds / 60); 
+    const s = totalSeconds % 60; 
+    return `${m}:${String(s).padStart(2, "0")}`;
 }
 
 // Load question 
@@ -95,8 +130,8 @@ function loadQuestion(i) {
         <button class="next-btn", id="${i}-next-btn">Skip</button>
     `;
     
-    // Append Question block to log box 
-    logBox.appendChild(block); 
+    logBox.appendChild(block); // Append Question block to log box 
+    updateStats(); // Update live stats 
 
     // Disable Next Button on all questions 
     const allNextBtns = document.querySelectorAll(".next-btn"); 
@@ -112,17 +147,12 @@ function loadQuestion(i) {
 
 // Double Click on Map (Come back when Demo Key limit resets)
 function handleClick(clickedLatLng) { 
-    // Ignore if clicks are not allowed
-    if (!canClick) { 
-        alertPanel.show(); 
-        return; 
-    }
 
     const loc = LOCATIONS[question];
     const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
     // Check if click is inside location bounds 
-    
+
     const bounds = new google.maps.LatLngBounds(
         new google.maps.LatLng(loc.lat - (loc.radiusLat + 0.0001), loc.lng - (loc.radiusLng + 0.0001)), // SW corner
         new google.maps.LatLng(loc.lat + (loc.radiusLat + 0.0001), loc.lng + (loc.radiusLng + 0.0001))  // NE corner
@@ -142,7 +172,10 @@ function handleClick(clickedLatLng) {
         // Disable game interactions
         canClick = false; 
 
-        // Feedback Entry Cretion for a Correct Guess
+        score++; // Increment score 
+        updateStats(); // Update live stats
+
+        // Feedback Entry Creation for a Correct Guess
         entry.className = "feedback-correct";
 
         // Feedback Entry for Correct Guess
@@ -188,13 +221,13 @@ function handleClick(clickedLatLng) {
 function nextQuestion() { 
     guesses = 0; // Reset Guesses
     this.disabled = true; // Disable clicked Next button 
-    alertPanel.close(); // Close any Alert Panels that are open
     
     // Skip Remaining Guesses
     if (canClick) {
         const loc = LOCATIONS[question];
         const correctLatLng = new google.maps.LatLng(loc.lat, loc.lng);
 
+        const currentBlock = document.getElementById(`question-${question}`);
         const currentFeedback = currentBlock.querySelector(".feedback-box");
         
         const entry = document.createElement("p");
@@ -241,8 +274,17 @@ function drawSquare(center, color, radiusLat, radiusLng) {
     squares.push(square);
 }
 
+// Update Live Stats 
+function updateStats() { 
+    
+    scoreDisplay.innerHTML = `${score} / ${LOCATIONS.length}`; // Score Display Live 
+    questionDisplay.innerHTML = `${question + 1} / ${LOCATIONS.length}`; // Question Display Live
+    
+}
+
 // End Game 
 function endGame() { 
+    stopTimer(); // Stop timer
     gamePanel.setAttribute("hidden", ""); // Hide Game Panel
     resultsPanel.show(); // Open Results Panel
 }
