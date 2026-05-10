@@ -4,14 +4,15 @@ let map; // Map
 let score = 0; // Number of correct answers
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
-let squares = []; // Global — stores all drawn squares
+let squares = []; // All drawn squares in map
 let canClick = true; // Double Click Ability
 let completed = false; // Track Completion of Questions
 const mapObj = document.getElementById("map"); // Map Object
+const newHS = document.getElementById("new-hs"); // New High Score Banner
 const logBox = document.getElementById("log-box"); // Log Box
 const basePts = document.getElementById("base-pts"); // Base Pts in Scoreboard
 const comboPts = document.getElementById("combo-pts"); // Combo Pts in Scoreboard
-const speedPts = document.getElementById("speed-pts"); // Speed Pts in Scorboard
+const speedPts = document.getElementById("speed-pts"); // Speed Pts in Scoreboard
 const startBtn = document.getElementById("start-btn"); // Start Button
 const statsBar = document.getElementById("stats-bar"); // Live Stats Bar
 const highScore = document.getElementById("high-score"); // High Score in Results Panel
@@ -35,8 +36,10 @@ const LOCATIONS = [ // Locations
     { name: "Extended University Commons", lat: 34.24055, lng: -118.53271,  radiusLat: 0.00015, radiusLng: 0.0003 }, // 34.240701690440645, -118.5327172309279
 ];
 
-let trueScore = { base: 0, combo: 0, speed: 0};
-
+let trueScore = { base: 0, combo: 0, speed: 0}; // Weighted Score 
+// (Correct on # Guess) 1st : +180 | 2nd : +120 | 3rd : +60 (x5 - for each Question)
+// (# of Correct Guesses total) 2 : +12 | 3 : +24 | 4 : +36 | 5 : +48 (12 x (score - 1))
+// (Speed Bonus) <= 20 secs : +5 & <= 15 secs : +15 & <= 10 secs : +31 (Stack up)
 
 // Map Initialization 
 function initMap() { 
@@ -389,18 +392,31 @@ function gameOver(idx) {
 
     // Calculate Speed Bonus 
     const totalSeconds = Math.floor(time / 1000);
-    if (totalSeconds <= 10) trueScore.speed += 31;
-    if (totalSeconds <= 15) trueScore.speed += 15;
     if (totalSeconds <= 20) trueScore.speed += 5;
+    if (totalSeconds <= 15) trueScore.speed += 15;
+    if (totalSeconds <= 10) trueScore.speed += 31;
 
     // Add to Scoreboard Calculation Section on Page
     basePts.innerHTML = trueScore.base; 
     comboPts.innerHTML = trueScore.combo; 
     speedPts.innerHTML = trueScore.speed; 
 
+    // Calculate Final Score 
+    const total = String(trueScore.base + trueScore.combo + trueScore.speed).padStart(3, "0");
+
     // Add to Resuls Panel 
     finalTime.innerHTML = formatTime(time); 
-    finalScore.innerHTML = trueScore.base + trueScore.combo + trueScore.speed;
+    finalScore.innerHTML = total;
+
+    // High Score
+    const isNew = saveHighScore(total, time);
+
+    loadHighScore(); // Load High Score. 
+
+    // If new display banner
+    if (isNew) {
+        newHS.removeAttribute("hidden");
+    }
 
     endGame();
 }
@@ -434,6 +450,9 @@ function restartGame() {
     // Close Game Over Panel 
     resultsPanel.close(); 
 
+    // High Score 
+    loadHighScore();
+
     // Hide Game Panel 
     gamePanel.setAttribute("hidden", "");
 
@@ -445,6 +464,30 @@ function restartGame() {
 function clearSquares() { 
     squares.forEach(s => s.setMap(null));
     squares = [];
+}
+
+// Save High Score to Local Storage
+function saveHighScore(finalScore, finalTime) {
+    const storedScore = parseInt(localStorage.getItem("highScore")) || 0;
+    const storedTime = localStorage.getItem("highScoreTime") || null;
+
+    // New high score if score is higher, or same score but faster time
+    if (finalScore > storedScore || 
+       (finalScore === storedScore && finalTime < (parseInt(localStorage.getItem("highScoreTimeRaw")) || Infinity))) {
+        localStorage.setItem("highScore", finalScore);
+        localStorage.setItem("highScoreTime", formatTime(finalTime));
+        localStorage.setItem("highScoreTimeRaw", finalTime);
+        return true; // New high score
+    }
+    return false;
+}
+
+// Load High Score from Local Storage
+function loadHighScore() {
+    const storedScore = localStorage.getItem("highScore") || "---";
+    const storedTime = localStorage.getItem("highScoreTime") || "--:--";
+    document.getElementById("high-score").innerHTML = storedScore;
+    document.getElementById("high-score-time").innerHTML = storedTime;
 }
 
 // Event Listeners 

@@ -238,7 +238,7 @@ ul #color-guide {
 }
 
 .prompt-box, #score-calc {
-    margin: 20px -25px -35px -25px;
+    margin: 20px -28px -35px -28px;
     border-top: 10px solid var(--csu-red);
 }
 
