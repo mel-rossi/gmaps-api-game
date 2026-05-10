@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Campus Map Quiz</title>
+    <title>CSUN Campus Map Quiz</title>
 
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> <!-- jQuery -->
@@ -117,14 +117,19 @@
             <dialog id="results-panel" class="panel">
                 <h2>Game Over</h2>
 
-                <p>
-                    Final Time: <span id="final-time"></span>
-                </p>
-                <p> 
-                    Final Score: <span id="final-score"></span>
-                </p>
+                <div class="result-row">
+                    <h3>Final Time:</h3> 
+                    <span id="final-time">9:99</span>
+                </div>
+                
+                <div class="result-row">
+                    <h3>Final Score:</h3> 
+                    <span id="final-score">000</span>
+                </div>
+                
                 <div id="high-score-box">
-                    <span id="new-hs" hidden>🏆 New!</span>
+                    <h3>High Score</h3>
+                    <p id="new-hs" hidden>🏆 New High Score!</p>
                     <p id="high-score">000</p>
                     <p id="high-score-time">9:99</p>
                 </div>

@@ -409,7 +409,7 @@ function gameOver(idx) {
     finalScore.innerHTML = total;
 
     // High Score
-    const isNew = saveHighScore(total, time);
+    const isNew = saveHighScore(parseInt(total), time);
 
     loadHighScore(); // Load High Score. 
 
@@ -445,7 +445,7 @@ function restartGame() {
 
     // Reset Live Stats Display 
     updateStats(); 
-    timerDisplay.innerHTML = "0.00"; 
+    timerDisplay.innerHTML = "0:00"; 
 
     // Close Game Over Panel 
     resultsPanel.close(); 
@@ -458,6 +458,12 @@ function restartGame() {
 
     // Show Game Instructions 
     introPanel.setAttribute("open", ""); 
+
+    // Hide Scoreboard Calculation 
+    scoreCalc.setAttribute("hidden", "");
+
+    // Hide new High Score Banner 
+    newHS.setAttribute("hidden", "");
 }
 
 // Clear Selection Boxes
@@ -468,17 +474,33 @@ function clearSquares() {
 
 // Save High Score to Local Storage
 function saveHighScore(finalScore, finalTime) {
-    const storedScore = parseInt(localStorage.getItem("highScore")) || 0;
-    const storedTime = localStorage.getItem("highScoreTime") || null;
+    const storedScore = parseInt(localStorage.getItem("highScore"));
+    const storedTimeRaw = parseInt(localStorage.getItem("highScoreTimeRaw"));
 
-    // New high score if score is higher, or same score but faster time
-    if (finalScore > storedScore || 
-       (finalScore === storedScore && finalTime < (parseInt(localStorage.getItem("highScoreTimeRaw")) || Infinity))) {
+    // If no high score exists yet
+    if (isNaN(storedScore)) {
         localStorage.setItem("highScore", finalScore);
         localStorage.setItem("highScoreTime", formatTime(finalTime));
         localStorage.setItem("highScoreTimeRaw", finalTime);
-        return true; // New high score
+        return true;
     }
+
+    // Compare scores
+    if (finalScore > storedScore) {
+        localStorage.setItem("highScore", finalScore);
+        localStorage.setItem("highScoreTime", formatTime(finalTime));
+        localStorage.setItem("highScoreTimeRaw", finalTime);
+        return true;
+    }
+
+    // Compare times if scores are equal
+    if (finalScore === storedScore && finalTime < storedTimeRaw) {
+        localStorage.setItem("highScore", finalScore);
+        localStorage.setItem("highScoreTime", formatTime(finalTime));
+        localStorage.setItem("highScoreTimeRaw", finalTime);
+        return true;
+    }
+
     return false;
 }
 

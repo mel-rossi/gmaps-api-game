@@ -169,6 +169,42 @@ dialog {
     color: var(--black-40);
 }
 
+/* Live Game Stats */
+#stats-bar {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-box { /* Stat Box */
+    display: flex;
+    margin: 0.5rem 0rem;
+    min-width: 90px;
+    padding: 2px 10px;
+    border-radius: 4px;
+    align-items: center;
+    flex-direction: column;
+    background: var(--bg-color);
+    border: 1px solid var(--black-60);
+}
+
+.stat-label { /* Stat Label */
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    color: var(--csu-red);
+    text-transform: uppercase;
+}
+
+.stat-value { /* Stat Value */
+    color: White;
+    font-size: 1.9rem;
+}
+
+.stat-label,
+.stat-value {
+    line-height: 1;
+    font-weight: 700;
+}
+
 /* Sidebar */
 #sidebar { 
     flex-shrink: 0;
@@ -178,7 +214,8 @@ dialog {
     border-right: 2px solid var(--csu-red);
 }
 
-.panel { /* Panels */
+/* Panels */
+.panel { /* Default */
     flex: 1;
     gap: 14px;
     padding: 24px 18px;
@@ -197,12 +234,12 @@ dialog {
     border-bottom: 1px solid var(--black-60);
 }
 
-/* Intro & Game Over Panel */ 
+/* Intro, Game Over, & Alert Panel */ 
 #intro-panel, #results-panel, #alert-panel { 
     transform: translate(-50%, -70%);
 }
 
-/* Intro Panel */
+/* Intro Panel List */
 #intro-panel ul { 
     font-size: 1rem;
     line-height: 1.8;
@@ -212,22 +249,22 @@ dialog {
     color: var(--black-20);
 }
 
-/* Selection Box - Color Guide */
+/* Selection Box Color Guide */
 ul #color-guide { 
     line-height: 2;
     text-indent: 2em;
     color: var(--black-40);
 }
 
-.red-select {
+.red-select, .feedback-wrong {
     color: var(--hint-red);
 }
 
-.green-select { 
+.green-select, .feedback-correct { 
     color: var(--hint-green);
 }
 
-.yellow-select { 
+.yellow-select, .feedback-guess { 
     color: var(--hint-yellow);
 }
 
@@ -237,6 +274,9 @@ ul #color-guide {
     color: var(--highlight);
 }
 
+/* Game Panel */
+
+/* Prompt Boxes & Score Calculation inside Log Box */
 .prompt-box, #score-calc {
     margin: 20px -28px -35px -28px;
     border-top: 10px solid var(--csu-red);
@@ -251,25 +291,81 @@ ul #color-guide {
     border-bottom: 1px solid var(--csu-red);
 }
 
-.bld-name { 
+.bld-name { /* Building Name inside Prompt Box */ 
     font-size: 1.2em;
     color: var(--highlight);
 }
 
-.feedback-correct { 
-    color: var(--hint-green);
-}
-
-.feedback-guess { 
-    color: var(--hint-yellow);
-}
-
-.feedback-wrong { 
-    color: var(--hint-red);
-}
-
-.feedback-complete { 
+.feedback-complete { /* Completed Feedback - Feedback Close off */
     color: var(--highlight);
+}
+
+/* Results Panel */ 
+#results-panel { 
+    min-width: 400px;
+    min-height: 510px;
+}
+
+#results-panel h3 { 
+    font-size: 1.4em;
+    color: var(--highlight);
+}
+
+.result-row { 
+    width: 100%;
+    display: flex; 
+    align-items: center;
+    justify-content: space-between;
+}
+
+#final-time, #final-score { 
+    font-size: 1.8em;
+}
+
+#final-time, #final-score, #high-score, #high-score-time { 
+    font-weight: 700;
+}
+
+/* High score Box */
+#high-score-box {
+    padding: 1px;
+    margin: 30px;
+    border-radius: 10%;
+    text-align: center;
+    border: 5px solid var(--csu-red);
+}
+
+#high-score-box h3, #high-score, #high-score-time, #new-hs { 
+    line-height: 0;
+    margin-top: 20px;
+}
+
+#high-score-box:has(#new-hs[hidden]) h3, 
+#high-score-box:has(#new-hs[hidden]) #high-score { 
+    line-height: 0.5;
+}
+
+#high-score { 
+    font-size: 5em;
+    margin-top: 20px;
+    margin-bottom: 50px;
+}
+
+#high-score-time { 
+    font-size: 1.7em;
+    color: var(--black-20);
+}
+
+#new-hs { 
+    padding: 10px;
+    border-radius: 5px;
+    display: inline-block;
+    color: var(--hint-yellow);
+    background: var(--csu-red);
+}
+
+#new-hs[hidden] { 
+    display: none;
 }
 
 /* Map Container */
@@ -278,8 +374,4 @@ ul #color-guide {
     height: 100%;
     overflow: hidden;
     position: relative;
-}
-
-.hidden { 
-    display: none;
 }
