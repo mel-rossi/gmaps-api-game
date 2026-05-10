@@ -175,6 +175,10 @@ dialog {
     gap: 10px;
 }
 
+#stats-bar[hidden] { 
+    display: none;
+}
+
 .stat-box { /* Stat Box */
     display: flex;
     margin: 0.5rem 0rem;
