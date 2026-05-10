@@ -198,7 +198,7 @@ dialog {
 }
 
 /* Intro & Game Over Panel */ 
-#intro-panel, #results-panel { 
+#intro-panel, #results-panel, #alert-panel { 
     transform: translate(-50%, -70%);
 }
 
@@ -237,9 +237,8 @@ ul #color-guide {
     color: var(--highlight);
 }
 
-.prompt-box {
-    margin: -35px;
-    margin-top: 20px;
+.prompt-box, #score-calc {
+    margin: 20px -25px -35px -25px;
     border-top: 10px solid var(--csu-red);
 }
 
@@ -254,6 +253,22 @@ ul #color-guide {
 
 .bld-name { 
     font-size: 1.2em;
+    color: var(--highlight);
+}
+
+.feedback-correct { 
+    color: var(--hint-green);
+}
+
+.feedback-guess { 
+    color: var(--hint-yellow);
+}
+
+.feedback-wrong { 
+    color: var(--hint-red);
+}
+
+.feedback-complete { 
     color: var(--highlight);
 }
 

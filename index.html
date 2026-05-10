@@ -34,7 +34,7 @@
         </div>
 
         <!-- Live Game Stats -->
-        <div id="stats-bar"> 
+        <div id="stats-bar" hidden> 
             <!-- Timer -->
             <div class="stat-box" id="timer-box"> 
                 <span class="stat-label">Time</span>
@@ -103,6 +103,14 @@
                 <div id="log-box">
                 </div>
 
+                <div id="score-calc" class="panel" hidden> 
+                    <h2>Scoreboard Calculation</h2>
+
+                    <p><b>Base Pts:</b> <span id="base-pts"></span></p>
+                    <p><b>Combo Pts:</b> <span id="combo-pts"></span></p>
+                    <p><b>Speed Pts:</b> <span id="speed-pts"></span></p>
+                </div>
+
             </section>
 
             <!-- Results Panel (After Game Ends) -->
@@ -112,14 +120,12 @@
                 <p>
                     Final Time: <span id="final-time"></span>
                 </p>
-                <p>
-                    Base Score: <span id="unweighted-score"></span>
-                </p>
                 <p> 
-                    Weighted Score: <span id="weighted-score"></span>
+                    Final Score: <span id="final-score"></span>
                 </p>
                 <div id="high-score-box">
-                    <p id="high-score"></p>
+                    <p id="high-score">000</p>
+                    <p id="high-score-time">9:99</p>
                 </div>
 
                 <button id="restart-btn">Play Again</button>
@@ -134,10 +140,10 @@
 
     </main>
 
-    <div id="alert-panel" class="panel" hidden> 
+    <dialog id="alert-panel" class="panel"> 
         <p>Game has been Completed. You can't Double Click on the Map anymore.</p>
         <p>Please proceed with the Game Over button to receive your results.</p>
-    </div>
+    </dialog>
     
     <!-- Footer -->
     <footer>

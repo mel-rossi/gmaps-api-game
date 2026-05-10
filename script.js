@@ -9,8 +9,15 @@ let canClick = true; // Double Click Ability
 let completed = false; // Track Completion of Questions
 const mapObj = document.getElementById("map"); // Map Object
 const logBox = document.getElementById("log-box"); // Log Box
+const basePts = document.getElementById("base-pts"); // Base Pts in Scoreboard
+const comboPts = document.getElementById("combo-pts"); // Combo Pts in Scoreboard
+const speedPts = document.getElementById("speed-pts"); // Speed Pts in Scorboard
 const startBtn = document.getElementById("start-btn"); // Start Button
+const statsBar = document.getElementById("stats-bar"); // Live Stats Bar
+const highScore = document.getElementById("high-score"); // High Score in Results Panel
 const gamePanel = document.getElementById("game-panel"); // Game Panel
+const finalTime = document.getElementById("final-time"); // Final Time in Results Panel
+const finalScore = document.getElementById("final-score"); // Final Score in Results Panel 
 const introPanel = document.getElementById("intro-panel"); // Intro Panel
 const alertPanel = document.getElementById("alert-panel"); // Alert Panel
 const restartBtn = document.getElementById("restart-btn"); // Restart Button
@@ -27,6 +34,9 @@ const LOCATIONS = [ // Locations
     { name: "Student Recreation Center",   lat: 34.23998, lng: -118.52493, radiusLat: 0.0007, radiusLng: 0.0003 }, // 34.24008973871634, -118.52493133092779
     { name: "Extended University Commons", lat: 34.24055, lng: -118.53271,  radiusLat: 0.00015, radiusLng: 0.0003 }, // 34.240701690440645, -118.5327172309279
 ];
+
+let trueScore = { base: 0, combo: 0, speed: 0};
+
 
 // Map Initialization 
 function initMap() { 
@@ -77,6 +87,8 @@ function startGame() {
     introPanel.close(); // Close Intro Panel
     mapObj.removeAttribute("hidden"); // Open Map
     gamePanel.removeAttribute("hidden"); // Open Game Panel
+    statsBar.removeAttribute("hidden"); // Open Live Stats Bar
+    
     
     startTimer(); // Start Timer 
 
@@ -125,7 +137,7 @@ function loadQuestion(i) {
     block.id = `question-${i}`;
     block.innerHTML = `
         <!-- Question Prompt -->
-        <h3>Where is <span class="bld-name">${loc.name}</span> ?</h2>
+        <h3>Where is <span class="bld-name">${loc.name}</span> ?</h3>
 
         <!-- Live Feedback & Progress -->
         <div class="feedback-box">
@@ -157,7 +169,7 @@ function handleClick(clickedLatLng) {
 
     // Ignore clicks when locked
     if (!canClick) { 
-        alertPanel.removeAttribute("hidden");
+        alertPanel.show();
         return; 
     }
 
@@ -196,6 +208,9 @@ function handleClick(clickedLatLng) {
 
         // Feedback Entry for Correct Guess
         entry.innerHTML = `You guessed correctly! Great job.`; 
+
+        // Calculate Base Pts 
+        trueScore.base += guesses === 0 ? 180 : guesses === 1 ? 120 : 60;
 
         // Draw Green Selection Box
         drawSquare(correctLatLng, "#00ac85", loc.radiusLat, loc.radiusLng); 
@@ -265,17 +280,18 @@ function nextQuestion(isSkip = false) {
 
     question++; 
 
-    // Last Question reached 
+    // Last Question reached / skipped
     if (question >= LOCATIONS.length) {
-        canClick = false; // Locak Map on last question 
+        canClick = false; // Lock Map on last question 
         stopTimer(); // Stop timer 
 
-        // Last question skipped
-        const lastBtn = 
-            document.getElementById(`question-${question - 1}`).querySelector(".next-btn");
-        lastBtn.textContent = "Game Over";
-        lastBtn.disabled = false;
-        lastBtn.addEventListener("click", gameOver);
+        // Clone to remove old skip listener
+        const lastBtn = document.getElementById(`question-${question - 1}`).querySelector(".next-btn");
+        const newBtn = lastBtn.cloneNode(true);
+        lastBtn.parentNode.replaceChild(newBtn, lastBtn);
+        newBtn.textContent = "Game Over";
+        newBtn.disabled = false;
+        newBtn.addEventListener("click", () => gameOver(question - 1));
     } else { 
         loadQuestion(question);
     }
@@ -296,7 +312,7 @@ function autoAdvance(btn) {
         
         const newBtn = btn.cloneNode(true); // Remove listeners 
         btn.parentNode.replaceChild(newBtn, btn);
-        newBtn.addEventListener("click", gameOver);
+        newBtn.addEventListener("click", () => gameOver(question));
     } else { // Call the next question
         nextQuestion.call(btn);
     }
@@ -351,16 +367,40 @@ function updateStats() {
 }
 
 // Game Over Button
-function gameOver() {
-    this.disabled = true; // Disable Game Over Button 
+function gameOver(idx) {
+    const btn = document.getElementById(`question-${idx}`).querySelector(".next-btn");
+    btn.disabled = true; // Disable Game Over Button 
+    alertPanel.close(); // Close Alert Panel 
 
-    const currentBlock = document.getElementById(`question-${question}`);
+    const currentBlock = document.getElementById(`question-${idx}`);
     const currentFeedback = currentBlock.querySelector(".feedback-box");
 
     const entry = document.createElement("p");
     entry.className = "feedback-complete";
     entry.innerHTML = `Game has been completed.`;
     currentFeedback.appendChild(entry);
+
+    scoreCalc = document.getElementById("score-calc");
+    scoreCalc.removeAttribute("hidden"); // Open Score Board Calculation 
+    scoreCalc.scrollIntoView({ behavior: "smooth" });
+
+    //  Calculate Combo Bonus 
+    if (score >= 2) trueScore.combo = (score - 1) * 12;
+
+    // Calculate Speed Bonus 
+    const totalSeconds = Math.floor(time / 1000);
+    if (totalSeconds <= 10) trueScore.speed += 31;
+    if (totalSeconds <= 15) trueScore.speed += 15;
+    if (totalSeconds <= 20) trueScore.speed += 5;
+
+    // Add to Scoreboard Calculation Section on Page
+    basePts.innerHTML = trueScore.base; 
+    comboPts.innerHTML = trueScore.combo; 
+    speedPts.innerHTML = trueScore.speed; 
+
+    // Add to Resuls Panel 
+    finalTime.innerHTML = formatTime(time); 
+    finalScore.innerHTML = trueScore.base + trueScore.combo + trueScore.speed;
 
     endGame();
 }
@@ -379,6 +419,7 @@ function restartGame() {
     guesses = 0; 
     canClick = true;
     completed = false; 
+    trueScore = { base: 0, combo: 0, speed: 0 };
 
     // Clear Selection Boxes for correct locations
     clearSquares(); 
