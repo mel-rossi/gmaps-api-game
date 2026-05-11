@@ -6,9 +6,17 @@ COMP 484 - Project 5: Google Maps API - JS Game
 
 [Google Maps Platform Docs - Demo Key](https://developers.google.com/maps/documentation/javascript/demo-key)
 
-## Configure Google Maps API
+[Google Cloud Console - Free Trial ($300 free credits - 90 days)](https://console.cloud.google.com/welcome/new)
+
+[Google Cloud Docs - Add a Google Maps API Key](https://docs.cloud.google.com/data-studio/add-a-google-maps-api-key)
+
+## Google Maps API Key - Notice
+
+The Maps API Key currently linked to this Application expires on August 6, 2026. 
+
+To continue running the functional application (with a repository clone) on your local machine follow the steps below:
 
 1. Rename the file `config.template.js` into `config.js`
-2. Inside `config.js`: Replace `API_KEY_HERE` with your Google Maps API key
-   - You can obtain a free Maps Demo Key in the Link provided above
+2. Inside `config.js`: Replace `%%API_KEY%%` with your Google Maps API key
+   - You can obtain a free Maps Demo Key in the Link provided above. Or obtain a standard key in a Free Trial (Links also provided above). Note: Demo Keys can be unstable, slow, and limiting.
 3. Open `index.html` in your web browser of choice
