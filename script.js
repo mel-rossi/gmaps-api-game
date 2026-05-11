@@ -154,7 +154,7 @@ function loadQuestion(i) {
         </div>
 
         <!-- Next Button --> 
-        <button class="next-btn" id="${i}-next-btn">Skip</button>
+        <button class="next-btn" id="${i}-next-btn" type="button">Skip</button>
     `;
     
     logBox.appendChild(block); // Append Question block to log box 
