@@ -2,6 +2,8 @@
 
 COMP 484 - Project 5: Google Maps API - JS Game 
 
+Note: Play on full screen, otherwise some locations may be cut off due to the size of the web window you're on. If necessary consider zooming out (`Cmd + -` or `Ctrl + -` on Windows) on your web window. Panning and zooming on the map itself have been turned off. 
+
 [GitHub Pages Link](https://mel-rossi.github.io/gmaps-api-game/)
 
 [Google Maps Platform Docs - Demo Key](https://developers.google.com/maps/documentation/javascript/demo-key)

@@ -51,7 +51,7 @@ introPanel.show();
 // Map Initialization 
 function initMap() { 
     map = new google.maps.Map(mapObj, { 
-        center: { lat: 34.239294, lng: -118.529317 }, // CSUN Campus
+        center: { lat: 34.2408999, lng: -118.529317 }, // CSUN Campus
         zoom: 17, 
         mapTypeId: "roadmap",
 
