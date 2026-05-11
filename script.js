@@ -1,12 +1,17 @@
 // Global Variables 
 
 let map; // Map
+let startTime = 0; // Start Time
+let time = 0; // Time
 let score = 0; // Number of correct answers
 let guesses = 0; // Number of guesses
 let question = 0; // Question number
 let squares = []; // All drawn squares in map
 let canClick = true; // Double Click Ability
+let scoreCalc = null; // Score Calc 
 let completed = false; // Track Completion of Questions
+let testRunning = false; // Test Running Check 
+let timerInterval = null; // Time Interval
 const mapObj = document.getElementById("map"); // Map Object
 const newHS = document.getElementById("new-hs"); // New High Score Banner
 const logBox = document.getElementById("log-box"); // Log Box
@@ -40,6 +45,8 @@ let trueScore = { base: 0, combo: 0, speed: 0}; // Weighted Score
 // (Correct on # Guess) 1st : +180 | 2nd : +120 | 3rd : +60 (x5 - for each Question)
 // (# of Correct Guesses total) 2 : +12 | 3 : +24 | 4 : +36 | 5 : +48 (12 x (score - 1))
 // (Speed Bonus) <= 20 secs : +5 & <= 15 secs : +15 & <= 10 secs : +31 (Stack up)
+
+introPanel.show();
 
 // Map Initialization 
 function initMap() { 
@@ -147,7 +154,7 @@ function loadQuestion(i) {
         </div>
 
         <!-- Next Button --> 
-        <button class="next-btn", id="${i}-next-btn">Skip</button>
+        <button class="next-btn" id="${i}-next-btn">Skip</button>
     `;
     
     logBox.appendChild(block); // Append Question block to log box 
@@ -252,6 +259,7 @@ function handleClick(clickedLatLng) {
     }
 
     currentFeedback.appendChild(entry);
+    currentBlock.scrollIntoView({ behavior: "smooth" });
 }
 
 // Move to Next Question 
@@ -295,6 +303,12 @@ function nextQuestion(isSkip = false) {
         newBtn.textContent = "Game Over";
         newBtn.disabled = false;
         newBtn.addEventListener("click", () => gameOver(question - 1));
+
+        // Scroll to View when you skip the last question
+        const lastBlock = document.getElementById(`question-${question - 1}`);
+        setTimeout(() => {
+            lastBlock.scrollIntoView({ behavior: "smooth", block: "end" });
+        }, 10);
     } else { 
         loadQuestion(question);
     }
@@ -457,7 +471,7 @@ function restartGame() {
     gamePanel.setAttribute("hidden", "");
 
     // Show Game Instructions 
-    introPanel.setAttribute("open", ""); 
+    introPanel.show(); 
 
     // Hide Scoreboard Calculation 
     scoreCalc.setAttribute("hidden", "");

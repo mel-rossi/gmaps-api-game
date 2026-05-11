@@ -379,3 +379,27 @@ ul #color-guide {
     overflow: hidden;
     position: relative;
 }
+
+/* Scrollbar */ 
+
+/* Scrollbar Track */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Scrollbar Background */
+::-webkit-scrollbar-track {
+    background: var(--csu-red);
+    border-radius: 10px;
+}
+
+/* Scrollbar Thumb */
+::-webkit-scrollbar-thumb {
+    background: rgba(000,000, 000, 0.6);
+    border-radius: 10px;
+}
+
+/* Hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--mute-blue);
+}
