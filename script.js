@@ -522,7 +522,7 @@ function saveHighScore(finalScore, finalTime) {
 function loadHighScore() {
     const storedScore = localStorage.getItem("highScore") || "---";
     const storedTime = localStorage.getItem("highScoreTime") || "--:--";
-    document.getElementById("high-score").innerHTML = storedScore;
+    document.getElementById("high-score").innerHTML = String(storedScore).padStart(3, "0");
     document.getElementById("high-score-time").innerHTML = storedTime;
 }
 
