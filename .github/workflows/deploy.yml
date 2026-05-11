@@ -1,22 +1,22 @@
 name: Deploy to GitHub Pages
-
 on:
   push:
     branches: [main]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Inject API Key into config.js
         run: |
           sed 's/%%API_KEY%%/${{ secrets.MAPS_API_KEY }}/g' \
             config.template.js > config.js
-
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add -f config.js
+          git commit -m "Add generated config.js"
+          git push origin HEAD:gh-pages --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
